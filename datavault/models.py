@@ -4,9 +4,6 @@ Provides a unified way to load embedding models (CLIP variants, DINOv2, etc.)
 and extract representations from datasets.
 """
 
-from __future__ import annotations
-
-import random
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Optional, Tuple
@@ -19,10 +16,6 @@ from tqdm import tqdm
 
 from .utils import _convert_image_to_rgb, _safe_to_tensor
 
-
-# ---------------------------------------------------------------------------
-# Model registry
-# ---------------------------------------------------------------------------
 
 @dataclass
 class ModelSpec:
@@ -70,6 +63,7 @@ def load_model(
 # Extraction
 # ---------------------------------------------------------------------------
 
+
 def extract(
     dataloader: DataLoader,
     model: nn.Module | Callable,
@@ -86,7 +80,11 @@ def extract(
     all_labels = []
 
     with torch.no_grad():
-        for x, y in tqdm(dataloader, desc=f"Extracting {suffix}"):
+        for batch in tqdm(dataloader, desc=f"Extracting {suffix}"):
+            if isinstance(batch, dict):
+                x, y = batch["image"], batch["label"]
+            else:
+                x, y = batch
             x = x.to(device)
             with torch.autocast(device_type=device.type):
                 features = model(x)
@@ -153,14 +151,67 @@ for _name, _arch in _CLIP_VARIANTS.items():
     )
 
 
-# --- DINOv2 ---
-
 @register_model("dinov2", hub_name="facebookresearch/dinov2")
 def _dinov2(device, models_dir):
     ckpt_dir = Path(models_dir) / "dinov2"
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     torch.hub.set_dir(str(ckpt_dir))
 
-    model = torch.hub.load("facebookresearch/dinov2", "dinov2_vitg14").to(device)
+    model = torch.hub.load("facebookresearch/dinov2", "dinov2_vitg14").to(
+        device
+    )
     model.eval()
-    return model, None  # DINOv2 uses default transforms
+    return model, None
+
+
+# --- DINOv3 ---
+
+_DINOV3_VARIANTS = {
+    "dinov3s": "facebook/dinov3-vits16-pretrain-lvd1689m",
+    "dinov3b": "facebook/dinov3-vitb16-pretrain-lvd1689m",
+    "dinov3l": "facebook/dinov3-vitl16-pretrain-lvd1689m",
+}
+
+
+def _make_dinov3_loader(hf_id: str):
+    """Factory for DINOv3 models loaded via HuggingFace transformers."""
+
+    def _load(device, models_dir):
+        from transformers import AutoImageProcessor, AutoModel
+
+        ckpt_dir = Path(models_dir) / "dinov3"
+        ckpt_dir.mkdir(parents=True, exist_ok=True)
+
+        processor = AutoImageProcessor.from_pretrained(
+            hf_id, cache_dir=str(ckpt_dir)
+        )
+        backbone = AutoModel.from_pretrained(hf_id, cache_dir=str(ckpt_dir)).to(
+            device
+        )
+        backbone.eval()
+
+        import torchvision.transforms as T
+
+        preprocess = T.Compose(
+            [
+                T.Resize(256, interpolation=T.InterpolationMode.BICUBIC),
+                T.CenterCrop(224),
+                _convert_image_to_rgb,
+                _safe_to_tensor,
+                T.Normalize(mean=processor.image_mean, std=processor.image_std),
+            ]
+        )
+
+        def encode(x):
+            out = backbone(x)
+            return out.last_hidden_state[:, 0]  # CLS token
+
+        return encode, preprocess
+
+    return _load
+
+
+for _name, _hf_id in _DINOV3_VARIANTS.items():
+    _MODELS[_name] = ModelSpec(
+        name=_name, loader=_make_dinov3_loader(_hf_id), hub_name=_hf_id
+    )
