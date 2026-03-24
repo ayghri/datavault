@@ -6,7 +6,7 @@ Prerequisites:
     Place it at ROOT_DIR/datasets/fer2013/fer2013.csv
 
 Usage:
-    python -m datavault.prepare.fer2013 --root_dir ROOT_DIR
+    python -m embedata.prepare.fer2013 --root_dir ROOT_DIR
 
 Splits fer2013.csv into train_split.csv (Usage=Training) and
 test_split.csv (Usage=PrivateTest or PublicTest), which is what

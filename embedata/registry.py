@@ -1,4 +1,4 @@
-"""Dataset registry for datavault.
+"""Dataset registry for embedata.
 
 Each dataset is registered as a callable that returns (train_dataset, val_dataset).
 """
@@ -204,7 +204,7 @@ def _cifar100(transform, data_path):
     "birdsnap",
     notes="Manually download wget https://thomasberg.org/datasets/birdsnap/1.1/birdsnap.tgz "
     "and run python get_birdsnap.py (Requires python2), then run "
-    "python -m datavault.prepare.birdsnap --root_dir ROOT_DIR",
+    "python -m embedata.prepare.birdsnap --root_dir ROOT_DIR",
 )
 def _birdsnap(transform, data_path):
     return (
@@ -371,7 +371,7 @@ def _imagenette(transform, data_path):
 @register(
     "fer2013",
     notes="Download from Kaggle, then run "
-    "python -m datavault.prepare.fer2013 --root_dir ROOT_DIR",
+    "python -m embedata.prepare.fer2013 --root_dir ROOT_DIR",
 )
 def _fer2013(transform, data_path):
     return (
@@ -525,7 +525,7 @@ def _pcam(transform, data_path):
 @register(
     "ucf101",
     notes="Requires pip install av pyunpack patool. "
-    "Run python -m datavault.prepare.ucf101 --root_dir ROOT_DIR --download",
+    "Run python -m embedata.prepare.ucf101 --root_dir ROOT_DIR --download",
 )
 def _ucf101(transform, data_path):
     return (
@@ -570,7 +570,7 @@ def _clevr(transform, data_path):
 @register(
     "hatefulmemes",
     notes="Manually download from Kaggle and unzip, then run "
-    "python -m datavault.prepare.hatefulmemes --root_dir ROOT_DIR",
+    "python -m embedata.prepare.hatefulmemes --root_dir ROOT_DIR",
 )
 def _hatefulmemes(transform, data_path):
     return (

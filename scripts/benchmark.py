@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 # Support running as: python scripts/benchmark.py
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from datavault import (
+from embedata import (
     get_dataloaders,
     get_default_transforms,
     load_model,

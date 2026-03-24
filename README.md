@@ -1,4 +1,4 @@
-# datavault
+# embedata
 
 Unified API for loading 29 vision datasets and extracting embeddings from any PyTorch model.
 Handles torchvision, HuggingFace, and custom ImageFolder datasets through a single interface.
@@ -7,21 +7,21 @@ Ships with 12 built-in embedding models (CLIP, DINOv2, DINOv3) and supports asyn
 ## Install
 
 ```bash
-pip install datavault              # core (torchvision datasets)
-pip install datavault[hf]          # + HuggingFace datasets (ImageNet, CUB, RESISC45)
+pip install embedata              # core (torchvision datasets)
+pip install embedata[hf]          # + HuggingFace datasets (ImageNet, CUB, RESISC45)
 ```
 
 From source:
 
 ```bash
-git clone https://github.com/ayghri/datavault.git && cd datavault
+git clone https://github.com/ayghri/embedata.git && cd embedata
 pip install -e ".[hf]"
 ```
 
 ## Quick start
 
 ```python
-from datavault import list_datasets, get_dataset, get_datasets, get_dataloaders
+from embedata import list_datasets, get_dataset, get_datasets, get_dataloaders
 
 print(list_datasets())  # all 29 datasets
 
@@ -38,7 +38,7 @@ Pass any PyTorch model that maps images to feature vectors. Embeddings are saved
 
 ```python
 import torch
-from datavault import get_dataloaders, extract
+from embedata import get_dataloaders, extract
 
 model = torch.hub.load("facebookresearch/dinov2", "dinov2_vitg14")
 model.eval().to("cuda:0")
@@ -54,7 +54,7 @@ extract(val_loader, model, device=torch.device("cuda:0"),
 Load them back as a PyTorch Dataset:
 
 ```python
-from datavault import load_embeddings
+from embedata import load_embeddings
 
 ds = load_embeddings("cifar10", "dinov2", repr_dir="./representations", split="train")
 feat, label = ds[0]
@@ -63,7 +63,7 @@ feat, label = ds[0]
 For on-the-fly extraction without disk I/O, `EmbeddingDataLoader` runs a model on a secondary device in a background thread:
 
 ```python
-from datavault import EmbeddingDataLoader, get_dataset
+from embedata import EmbeddingDataLoader, get_dataset
 
 dataset = get_dataset("cifar10", split="train", root_dir="./data")
 
@@ -80,7 +80,7 @@ Eight CLIP variants (`clipRN50`, `clipRN101`, `clipRN50x4`, `clipRN50x16`, `clip
 DINOv2 ViT-g/14 (`dinov2`), and three DINOv3 variants (`dinov3s`, `dinov3b`, `dinov3l`).
 
 ```python
-from datavault import list_models, load_model
+from embedata import list_models, load_model
 
 model, preprocess = load_model("clipvitL14", device="cuda:0", models_dir="./models")
 ```
@@ -94,7 +94,7 @@ CLIP models require `pip install git+https://github.com/openai/CLIP.git`. DINOv3
 Register your own dataset loader with the `@register` decorator. The function receives a torchvision transform and a data path, and returns `(train_dataset, val_dataset)`:
 
 ```python
-from datavault import register
+from embedata import register
 
 @register("my_dataset", notes="Setup instructions shown by get_spec()")
 def _my_dataset(transform, data_path):
@@ -105,7 +105,7 @@ def _my_dataset(transform, data_path):
 
 ## HuggingFace streaming
 
-Three datasets (ImageNet, CUB, RESISC45) load via HuggingFace and support streaming mode (requires `pip install datavault[hf]`). ImageNet-1k is gated and requires `huggingface-cli login`.
+Three datasets (ImageNet, CUB, RESISC45) load via HuggingFace and support streaming mode (requires `pip install embedata[hf]`). ImageNet-1k is gated and requires `huggingface-cli login`.
 
 ```python
 train_ds, val_ds = get_datasets("imagenet", streaming=True)
@@ -116,13 +116,13 @@ train_ds, val_ds = get_datasets("imagenet", streaming=True)
 Some datasets require manual download and preparation before use. Python prepare scripts are bundled with the package:
 
 ```bash
-python -m datavault.prepare.birdsnap     --root_dir ROOT_DIR
-python -m datavault.prepare.fer2013      --root_dir ROOT_DIR
-python -m datavault.prepare.ucf101       --root_dir ROOT_DIR [--download]
-python -m datavault.prepare.hatefulmemes --root_dir ROOT_DIR
+python -m embedata.prepare.birdsnap     --root_dir ROOT_DIR
+python -m embedata.prepare.fer2013      --root_dir ROOT_DIR
+python -m embedata.prepare.ucf101       --root_dir ROOT_DIR [--download]
+python -m embedata.prepare.hatefulmemes --root_dir ROOT_DIR
 ```
 
-Shell scripts for `cars`, `eurosat`, and `sun397` are included under `datavault/prepare/`. All scripts expect raw data under `ROOT_DIR/datasets/{dataset_name}/` and write prepared splits to the same location.
+Shell scripts for `cars`, `eurosat`, and `sun397` are included under `embedata/prepare/`. All scripts expect raw data under `ROOT_DIR/datasets/{dataset_name}/` and write prepared splits to the same location.
 
 ## Available datasets
 
@@ -158,7 +158,7 @@ Shell scripts for `cars`, `eurosat`, and `sun397` are included under `datavault/
 | sun397 | ~19,850 | ~19,850 | 397 | variable | SUN397 | manual + prepare |
 | ucf101 | varies | varies | 101 | variable | ImageFolder | frame extraction + prepare |
 
-Counts reflect splits as loaded by datavault (some merge train+val for training).
+Counts reflect splits as loaded by embedata (some merge train+val for training).
 "variable" means images have different native resolutions -- all are resized by the transform (default 224x224). Datasets marked "auto-download" are fetched on first use.
 
 ## License

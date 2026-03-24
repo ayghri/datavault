@@ -5,7 +5,7 @@ Prerequisites:
     and extract to ROOT_DIR/datasets/hatefulmemes/ (should contain train.jsonl, dev.jsonl, and image files).
 
 Usage:
-    python -m datavault.prepare.hatefulmemes --root_dir ROOT_DIR
+    python -m embedata.prepare.hatefulmemes --root_dir ROOT_DIR
 """
 
 import argparse

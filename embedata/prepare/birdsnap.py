@@ -6,7 +6,7 @@ Prerequisites:
     3. python get_birdsnap.py  (requires python2, downloads images)
 
 Usage:
-    python -m datavault.prepare.birdsnap --root_dir ROOT_DIR
+    python -m embedata.prepare.birdsnap --root_dir ROOT_DIR
 
 Expects raw images at ROOT_DIR/datasets/birdsnap/download/images/.
 Writes train/test splits to ROOT_DIR/datasets/birdsnap/{train,test}/.

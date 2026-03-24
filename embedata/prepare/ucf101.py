@@ -4,7 +4,7 @@ Prerequisites:
     pip install av pyunpack patool
 
 Usage:
-    python -m datavault.prepare.ucf101 --root_dir ROOT_DIR [--download]
+    python -m embedata.prepare.ucf101 --root_dir ROOT_DIR [--download]
 
 Downloads/expects raw data at ROOT_DIR/datasets/ucf101/.
 Writes frames to ROOT_DIR/datasets/ucf101/{train,val}/.

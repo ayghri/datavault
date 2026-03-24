@@ -17,7 +17,7 @@ from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from datavault import load_model, extract, get_default_transforms
+from embedata import load_model, extract, get_default_transforms
 
 
 def main():

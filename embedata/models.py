@@ -1,4 +1,4 @@
-"""Model registry for datavault.
+"""Model registry for embedata.
 
 Provides a unified way to load embedding models (CLIP variants, DINOv2, etc.)
 and extract representations from datasets.

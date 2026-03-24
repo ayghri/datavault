@@ -26,7 +26,7 @@ from sklearn.neighbors import kneighbors_graph
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from datavault import load_embeddings
+from embedata import load_embeddings
 
 ALL_MODELS = ["clipvitL14", "dinov3b", "dinov2"]
 
