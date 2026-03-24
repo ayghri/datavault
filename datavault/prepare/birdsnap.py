@@ -2,11 +2,14 @@
 
 Prerequisites:
     1. wget https://thomasberg.org/datasets/birdsnap/1.1/birdsnap.tgz
-    2. tar xzf birdsnap.tgz
+    2. tar xzf birdsnap.tgz -C ROOT_DIR/datasets/birdsnap/
     3. python get_birdsnap.py  (requires python2, downloads images)
 
 Usage:
-    python scripts/prepare_birdsnap.py --input /path/to/birdsnap/download/images --output /path/to/birdsnap
+    python -m datavault.prepare.birdsnap --root_dir ROOT_DIR
+
+Expects raw images at ROOT_DIR/datasets/birdsnap/download/images/.
+Writes train/test splits to ROOT_DIR/datasets/birdsnap/{train,test}/.
 """
 
 import argparse
@@ -30,15 +33,15 @@ def is_valid_image(path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=str, required=True, help="Path to birdsnap/download/images")
-    parser.add_argument("--output", type=str, required=True, help="Output path for train/test splits")
+    parser.add_argument("--root_dir", type=str, required=True, help="Project root directory")
     parser.add_argument("--test-per-class", type=int, default=5)
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
 
     random.seed(args.seed)
-    input_dir = Path(args.input)
-    output_dir = Path(args.output)
+    data_path = Path(args.root_dir) / "datasets" / "birdsnap"
+    input_dir = data_path / "download" / "images"
+    output_dir = data_path
 
     for split in ["train", "test"]:
         (output_dir / split).mkdir(parents=True, exist_ok=True)

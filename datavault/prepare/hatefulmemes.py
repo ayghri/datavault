@@ -2,10 +2,10 @@
 
 Prerequisites:
     Download from https://www.kaggle.com/datasets/parthplc/facebook-hateful-meme-dataset
-    and extract to a folder containing train.jsonl, dev.jsonl, and image files.
+    and extract to ROOT_DIR/datasets/hatefulmemes/ (should contain train.jsonl, dev.jsonl, and image files).
 
 Usage:
-    python scripts/prepare_hatefulmemes.py --input /path/to/hatefulmemes --output /path/to/hatefulmemes
+    python -m datavault.prepare.hatefulmemes --root_dir ROOT_DIR
 """
 
 import argparse
@@ -19,12 +19,12 @@ from tqdm import tqdm
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=str, required=True)
-    parser.add_argument("--output", type=str, required=True)
+    parser.add_argument("--root_dir", type=str, required=True, help="Project root directory")
     args = parser.parse_args()
 
-    input_dir = Path(args.input)
-    output_dir = Path(args.output)
+    data_path = Path(args.root_dir) / "datasets" / "hatefulmemes"
+    input_dir = data_path
+    output_dir = data_path
 
     for split_name, jsonl_file in [("train", "train.jsonl"), ("test", "dev.jsonl")]:
         jsonl_path = input_dir / jsonl_file

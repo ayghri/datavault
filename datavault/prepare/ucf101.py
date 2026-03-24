@@ -4,7 +4,10 @@ Prerequisites:
     pip install av pyunpack patool
 
 Usage:
-    python scripts/prepare_ucf101.py --input /path/to/ucf101 --output /path/to/ucf101 --download
+    python -m datavault.prepare.ucf101 --root_dir ROOT_DIR [--download]
+
+Downloads/expects raw data at ROOT_DIR/datasets/ucf101/.
+Writes frames to ROOT_DIR/datasets/ucf101/{train,val}/.
 """
 
 import argparse
@@ -70,13 +73,13 @@ def extract_middle_frame(video_path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=str, required=True)
-    parser.add_argument("--output", type=str, required=True)
+    parser.add_argument("--root_dir", type=str, required=True, help="Project root directory")
     parser.add_argument("--download", action="store_true")
     args = parser.parse_args()
 
-    input_dir = Path(args.input)
-    output_dir = Path(args.output)
+    data_path = Path(args.root_dir) / "datasets" / "ucf101"
+    input_dir = data_path
+    output_dir = data_path
 
     if args.download:
         download_and_extract(input_dir)

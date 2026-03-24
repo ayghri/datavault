@@ -13,7 +13,6 @@ from .embedding import load_embeddings
 
 
 __all__ = [
-    # datasets
     "register",
     "list_datasets",
     "get_dataset",
@@ -22,11 +21,9 @@ __all__ = [
     "get_spec",
     "ArrayDataset",
     "get_default_transforms",
-    # models
     "list_models",
     "load_model",
     "extract",
-    # embeddings
     "load_embeddings",
     "EmbeddingDataLoader",
 ]

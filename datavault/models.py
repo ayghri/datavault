@@ -59,11 +59,6 @@ def load_model(
     return _MODELS[name].loader(device, models_dir)
 
 
-# ---------------------------------------------------------------------------
-# Extraction
-# ---------------------------------------------------------------------------
-
-
 def extract(
     dataloader: DataLoader,
     model: nn.Module | Callable,
@@ -102,12 +97,6 @@ def extract(
 
     return feats, labels
 
-
-# ---------------------------------------------------------------------------
-# Registered models
-# ---------------------------------------------------------------------------
-
-# --- CLIP variants ---
 
 _CLIP_VARIANTS = {
     "clipRN50": "RN50",
@@ -163,8 +152,6 @@ def _dinov2(device, models_dir):
     model.eval()
     return model, None
 
-
-# --- DINOv3 ---
 
 _DINOV3_VARIANTS = {
     "dinov3s": "facebook/dinov3-vits16-pretrain-lvd1689m",

@@ -123,11 +123,6 @@ def get_dataloaders(
     return trainloader, valloader
 
 
-# ---------------------------------------------------------------------------
-# Custom dataset classes needed by some loaders
-# ---------------------------------------------------------------------------
-
-
 class MyFER2013(dsets.FER2013):
     _RESOURCES = {
         "train": ("train_split.csv", "aa1bdf3e64bc6697783ce586283a2b74"),
@@ -169,11 +164,6 @@ class MySUN397(dsets.SUN397):
         ]
 
 
-# ---------------------------------------------------------------------------
-# Registered dataset loaders
-# ---------------------------------------------------------------------------
-
-
 @register("food101")
 def _food101(transform, data_path):
     return (
@@ -213,7 +203,8 @@ def _cifar100(transform, data_path):
 @register(
     "birdsnap",
     notes="Manually download wget https://thomasberg.org/datasets/birdsnap/1.1/birdsnap.tgz "
-    "and run python get_birdsnap.py (Requires python2), then run prepare_birdsnap.py",
+    "and run python get_birdsnap.py (Requires python2), then run "
+    "python -m datavault.prepare.birdsnap --root_dir ROOT_DIR",
 )
 def _birdsnap(transform, data_path):
     return (
@@ -379,8 +370,8 @@ def _imagenette(transform, data_path):
 
 @register(
     "fer2013",
-    notes="Download from Kaggle, split fer2013.csv to train/test, "
-    "update md5sum in MyFER2013",
+    notes="Download from Kaggle, then run "
+    "python -m datavault.prepare.fer2013 --root_dir ROOT_DIR",
 )
 def _fer2013(transform, data_path):
     return (
@@ -472,8 +463,7 @@ def _gtsrb(transform, data_path):
 
 @register(
     "kitti",
-    notes="Download image_2 and label_2 zips from avg-kitti, "
-    "then run: python scripts/prepare_kitti.py (from turtle/dataset_preparation). "
+    notes="Download image_2 and label_2 zips from avg-kitti. "
     "Labels are vehicle distance bins (4 classes).",
 )
 def _kitti(transform, data_path):
@@ -535,7 +525,7 @@ def _pcam(transform, data_path):
 @register(
     "ucf101",
     notes="Requires pip install av pyunpack patool. "
-    "Run prepare_ucf101.py --download",
+    "Run python -m datavault.prepare.ucf101 --root_dir ROOT_DIR --download",
 )
 def _ucf101(transform, data_path):
     return (
@@ -579,7 +569,8 @@ def _clevr(transform, data_path):
 
 @register(
     "hatefulmemes",
-    notes="Manually download from Kaggle and unzip, then run prepare_memes.py",
+    notes="Manually download from Kaggle and unzip, then run "
+    "python -m datavault.prepare.hatefulmemes --root_dir ROOT_DIR",
 )
 def _hatefulmemes(transform, data_path):
     return (
@@ -656,7 +647,7 @@ def _cub(transform, data_path, streaming=False):
 
 @register(
     "imagenet",
-    notes="Uses HuggingFace ILSVRC/imagenet-1k (gated — requires huggingface-cli login). "
+    notes="Uses HuggingFace ILSVRC/imagenet-1k (gated -- requires huggingface-cli login). "
     "Supports streaming=True.",
 )
 def _imagenet(transform, data_path, streaming=False):
